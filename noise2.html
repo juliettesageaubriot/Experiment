@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<style>
+    #canvas {
+        background-color: black;
+        padding: 0;
+        margin: 0;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<canvas id="canvas" width="900" height="900"></canvas>
+<script src="classes/vector.js"></script>
+
+<script>
+    let simplex = new SimplexNoise(Math.random)
+    console.log(simplex)
+
+    let canvas = document.querySelector('#canvas');
+    let ctx = canvas.getContext('2d');
+
+
+    let pointArray = [];
+
+    //Class
+    class Point {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        DrawPoint() {
+            ctx.save();
+            ctx.beginPath();
+            ctx.fillStyle = 'white';
+            // x, y, radius, startAngle, endAngle, clockwise
+            ctx.arc(this.x, this.y, 4, 0, Math.PI * 2, true);
+            ctx.fill();
+            ctx.closePath();
+            ctx.restore()
+        }
+
+        update() {
+            this.DrawPoint()
+        }
+    }
+
+    //Initialiser les points
+    function init() {
+        for (let i = 0; i < 50; i++) {
+            let x = i * canvas.width / 50;
+            let y = canvas.height / 2;
+            pointArray.push(new Point(x, y))
+        }
+    }
+
+    //loop
+    function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // for (let i = 0; i < pointArray.length; i++) {
+        //     pointArray[i].update();
+        //     for (let j = 0; j < pointArray.length; j++) {
+        //         x1 = pointArray[i].x;
+        //         x2 = pointArray[j].x;
+        //         y1 = pointArray[i].y;
+        //         y2 = pointArray[j].y;
+        //         ctx.beginPath();
+        //         ctx.strokeStyle = 'white';
+        //         ctx.moveTo(x1, y1);
+        //         ctx.lineTo(x2, y2);
+        //         ctx.stroke();
+        //         ctx.closePath()
+        //     }
+
+
+        for (x = 0; x < canvas.width; x += 30) {
+            for (y = 0; y < canvas.height; y += 80) {
+                let n = simplex.noise2D(x,  Date.now() * 0.0001);
+                ctx.save();
+                ctx.translate(x, y + n* 100);
+                // ctx.scale(n * 3, n * 3);
+                // ctx.rotate(n * 3);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, 10, 10);
+                ctx.restore();
+            }
+        }
+        requestAnimationFrame(loop);
+    }
+
+
+    init();
+    loop()
+
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+<script src="classes/vector.js"></script>
+<script src="classes/Triangle.js"></script>
+<script>
+    let canvas = document.getElementById('canvas');
+    let ctx = canvas.getContext('2d');
+
+    let mouse = {x: 0, y: 0};
+    let pos = {x: 0, y: 0};
+
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+    let position = {x: WIDTH / 2, y: HEIGHT / 2};
+    let triangle = new Triangle(position);
+
+    function drawTriangle() {
+        triangle.seek(mouse);
+        triangle.draw(ctx);
+    }
+
+    function draw() {
+        drawBackground();
+        drawTriangle();
+    }
+
+    function drawBackground() {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    }
+
+    function update() {
+        requestAnimationFrame(update);
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        drawBackground();
+        drawTriangle();
+    }
+
+    update();
+    draw();
+
+    document.addEventListener('mousemove', function (e) {
+        mouse.x = e.offsetX;
+        mouse.y = e.offsetY;
+    })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+<script src="classes/vector.js"></script>
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<script>
+
+    let canvas = document.querySelector('#canvas');
+    let ctx = canvas.getContext('2d');
+
+    let long = 100;
+
+    let position = new Vector(0, 0, 0);
+    let velocity = new Vector(1, 0.5);
+
+    function update() {
+        updateSquare();
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBackground();
+        drawSquare();
+    }
+
+    function updateSquare() {
+        Vector.add(position, velocity, position);
+
+    }
+
+    function drawSquare() {
+        ctx.save();
+        ctx.translate(position.x, position.y);
+
+        if ( position.x > (canvas.width - long ) || position.x < 0 ) {
+            velocity.x *= -1
+        }
+        if ( position.y > (canvas.height - long ) || position.y < 0 ) {
+            velocity.y *= -1;
+        }
+
+        ctx.fillStyle = '#E3F7FC';
+        ctx.beginPath();
+        ctx.rect(0, 0, 100, 100);
+        ctx.fill();
+        ctx.closePath();
+        ctx.restore();
+
+        console.log(position.x)
+    }
+
+
+    function drawBackground() {
+        ctx.fillStyle = '#295863';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    }
+
+    function gameLoop() {
+        requestAnimationFrame(gameLoop);
+        update();
+        draw();
+    }
+    gameLoop();
+
+</script>
+</body>
+</html>

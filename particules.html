@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rectangle</title>
+</head>
+<body>
+<canvas id="canvas" width="900" height="900"></canvas>
+<script src="classes/vector.js"></script>
+<script src="classes/Point.js"></script>
+<script>
+    let canvas = document.getElementById('canvas');
+    let ctx = canvas.getContext('2d');
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+    const particules = [];
+    const nbPoints = 200;
+    const distMax = 70;
+
+    let now = Date.now();
+    let lastTime = now;
+    let deltaTime = 6;
+
+    function drawBackground() {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawPoints() {
+        for (let i = 0; i < nbPoints; i++) {
+            let position = {x: Math.random() * WIDTH, y: Math.random() * HEIGHT};
+            let velocity = {x: Math.random() * .2, y: Math.random() * .2};
+            let particule = new Point(position, velocity);
+            particules.push(particule);
+            particule.draw(ctx)
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBackground();
+        drawPoints();
+    }
+
+    function updatePoints() {
+        for (let i = 0; i < nbPoints; i++) {
+            var particule = particules[i];
+            particule.update(deltaTime);
+            if (particule.position.x > WIDTH || particule.position.x < 0) particule.position.x = -particule.velocity.x;
+            if (particule.position.y > HEIGHT || particule.position.y < 0) particule.position.y = -particule.velocity.y;
+            particule.draw(ctx)
+        }
+    }
+
+
+    function getRandomInt(max = canvas.width, min = 0) {
+        return Math.floor(Math.random() * Math.floor(max - min) + Math.floor(min));
+    }
+
+    function updateLine() {
+        for (let i = 0; i < nbPoints; i++) {
+            for (let j = i; j < nbPoints; j++) {
+                let dist = Math.sqrt(Math.pow((particules[i].position.x - particules[j].position.x), 2) +
+                    Math.pow((particules[i].position.y - particules[j].position.y), 2));
+
+
+                if (dist < distMax) {
+                    ctx.beginPath();
+
+                    ctx.moveTo(particules[i].position.x, particules[i].position.y);
+                    ctx.lineTo(particules[j].position.x, particules[j].position.y);
+                    ctx.strokeStyle = '#76E8AB';
+                    ctx.globalAlpha = 1;
+                    // ctx.strokeStyle = 'rgb(' + getRandomInt(255) + ', ' + getRandomInt(255) + ', ' + getRandomInt(255) + ')';
+                    ctx.stroke();
+
+                    ctx.closePath();
+
+                } else if (dist < distMax *2 && dist < distMax *1.5) {
+                    ctx.beginPath();
+                    ctx.moveTo(particules[i].position.x, particules[i].position.y);
+                    ctx.lineTo(particules[j].position.x, particules[j].position.y);
+                    ctx.strokeStyle = '#82FFE0';
+
+                    ctx.globalAlpha = 0.5;
+                    ctx.stroke();
+
+                }
+            }
+        }
+    }
+
+    function update() {
+        now = Date.now();
+        deltaTime = now - lastTime;
+
+        requestAnimationFrame(update);
+
+        lastTime = now;
+        // console.log(deltaTime)
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBackground();
+        updatePoints();
+        updateLine();
+
+    }
+
+    draw();
+    update()
+
+</script>
+</body>
+</html>

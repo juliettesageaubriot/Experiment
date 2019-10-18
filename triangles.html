@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+</style>
+
+<canvas id="canvas" width="1200" height="1080"></canvas>
+<script>
+    function getRandomInt(max = canvas.width , min = 0) {
+        return Math.floor(Math.random() * Math.floor(max - min) + Math.floor(min));
+    }
+
+    function drawTriangle(x, y, angle, opacity, scale, size) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.fillStyle = 'rgb('+getRandomInt(255)+', '+getRandomInt(255)+', '+getRandomInt(255)+')';
+
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.scale(scale, scale);
+        ctx.globalAlpha = opacity;
+        ctx.moveTo(-size / 2, size / 2);
+        ctx.lineTo(0, -size / 2);
+        ctx.lineTo(size / 2, size / 2);
+        ctx.lineTo(-size / 2, size / 2);
+
+        ctx.fill();
+
+        ctx.closePath();
+        ctx.restore();
+    }
+
+    let canvas = document.querySelector('#canvas');
+    let ctx = canvas.getContext('2d');
+
+    function draw() {
+        document.addEventListener('mousemove', function () {
+            for (let i = 0; i < 40; i++){
+                drawTriangle(getRandomInt(canvas.width), getRandomInt(canvas.height), getRandomInt(4), Math.random(), Math.random()*5, getRandomInt(i));
+            }
+        });
+    }
+
+    draw();
+
+
+</script>
+</body>
+</html>

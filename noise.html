@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<style>
+    #canvas {
+        background-color: black;
+        padding: 0;
+        margin: 0;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<canvas id="canvas" width="900" height="900"></canvas>
+<script src="classes/vector.js"></script>
+
+<script>
+    let simplex = new SimplexNoise(Math.random);
+    console.log(simplex);
+
+    let canvas = document.querySelector('#canvas');
+    let ctx = canvas.getContext('2d');
+
+
+    //loop
+    function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (x = 0; x < canvas.width; x += 10) {
+            for (y = 0; y < canvas.height; y += 10) {
+                let n = simplex.noise3D(x / 1000, y / 1000, Date.now() * 0.0001);
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.scale(n * 3, n * 3);
+                // ctx.rotate(n * 3);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, 10, 10);
+                ctx.restore();
+            }
+        }
+        requestAnimationFrame(update);
+    }
+
+    // init();
+    update()
+
+</script>
+</body>
+</html>

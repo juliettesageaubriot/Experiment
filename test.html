@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+
+    <title>Noise</title>
+    <style>
+        #myCanvas {
+            background-color: black;
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas"></canvas>
+</body>
+​
+<script>
+    let canvas = document.querySelector('#myCanvas');
+    let ctx = canvas.getContext('2d');
+
+    //controle
+    this.settings = {
+        radius: 1,
+        scale: 200,
+        vitesse: 1000,
+        amplitude: 50
+    }
+
+    // let gui = new dat.GUI();
+    // gui.add(this.settings, 'radius', 1, 10).step(1)
+    // gui.add(this.settings, 'scale', 1, 200).step(1)
+    // gui.add(this.settings, 'vitesse', 1, 1500).step(10)
+    // gui.add(this.settings, 'amplitude', 1, 500).step(10)
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let pointArray = [];
+
+    //simplex noise
+    let simplex = new SimplexNoise(Math.random);
+    console.log(simplex);
+
+    //Class
+    class Point {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        DrawPoint() {
+            ctx.save();
+            ctx.beginPath();
+            ctx.fillStyle = 'white';
+            // x, y, radius, startAngle, endAngle, clockwise
+            ctx.arc(this.x, this.y, settings.radius, 0, Math.PI * 2, true)
+            ctx.fill();
+            ctx.closePath();
+            ctx.restore()
+        }
+
+        update() {
+            this.DrawPoint()
+        }
+    }
+
+    //Initialiser les points
+    function init() {
+        for (let i = 0; i < 201; i++) {
+            let x = i * canvas.width / 200;
+            let y = canvas.height / 2;
+            pointArray.push(new Point(x, y))
+        }
+        console.log(settings.quantity)
+    }
+
+    //loop
+    function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < pointArray.length - 1; i++) {
+            // simplex.noise2D(Le point x /scale, Date.now()/vitesse)*amplitude+position en y;
+            pointArray[i].y = simplex.noise2D(pointArray[i].x / settings.scale, Date.now() / settings.vitesse) * settings.amplitude + canvas.height / 2;
+            pointArray[i].update();
+            x1 = pointArray[i].x
+            x2 = pointArray[i + 1].x
+            y1 = pointArray[i].y
+            y2 = pointArray[i + 1].y
+            ctx.beginPath();
+            ctx.strokeStyle = 'white';
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.closePath()
+        }
+        requestAnimationFrame(loop);
+    }
+
+    init();
+    loop()
+
+</script>
+​
+</html>
