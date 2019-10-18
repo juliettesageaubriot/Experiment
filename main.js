@@ -31,23 +31,25 @@ button.addEventListener('click', function () {
         update();
     }
 
-        let audio = document.createElement('audio');
-        audio.src = 'perdus.mp3';
-        audio.controls = 'true';
-        document.body.appendChild(audio);
-        audio.style.width = window.innerWidth + 'px';
+    let audio = document.createElement('audio');
+    audio.src = 'perdus.mp3';
+    audio.controls = 'true';
+    document.body.appendChild(audio);
+    audio.style.width = window.innerWidth + 'px';
 
-        let audioContext = new AudioContext();
-        analyser = audioContext.createAnalyser();
-        let source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
+    let audioContext = new AudioContext();
+    analyser = audioContext.createAnalyser();
+    let source = audioContext.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
 
-        setTimeout(function () {
-            audio.play();
-        }, 1500)
+    setTimeout(function () {
+        audio.play();
+    }, 1500)
 
-        // audio.play();
+    // audio.play();
+
+    let nbCercle = 10;
 
 
     function drawCircle() {
@@ -55,11 +57,12 @@ button.addEventListener('click', function () {
         let freqByteData = new Uint8Array(analyser.frequencyBinCount);
         analyser.getByteFrequencyData(freqByteData);
 
-        for (let i = 1; i === 1; i++) {
+        for (let i = 0; i < nbCercle; i++) {
             let position = {x: WIDTH / 2, y: HEIGHT / 2};
             let velocity = {x: Math.random() * .2, y: Math.random() * .2};
             let size = freqByteData[i] + deltaTime / 100;
-            let circle = new Circle(position, velocity, size);
+            let color = `rgb(${freqByteData[i] * 3},${freqByteData[i]},${freqByteData[i] * 2})`;
+            let circle = new Circle(position, velocity, size, color);
             circles.push(circle);
             circle.draw(ctx);
         }
@@ -82,13 +85,13 @@ button.addEventListener('click', function () {
                 ctx.rotate(n * 2 - deltaTime / 10000);
 
                 if (changeBackground === true) {
-                    ctx.scale(n * 2 - deltaTime / 10000, n * 2 - deltaTime / 10000);
+                    ctx.scale(n * 3 - deltaTime / 10000, n * 3 - deltaTime / 10000);
                 }
 
                 if (distanceToCenter < freqByteData[200]) {
-                    ctx.fillStyle = 'red';
+                    ctx.fillStyle = `rgb(${100 - freqByteData[x]},${freqByteData[y]},${freqByteData[y]})`;
                 } else if (dist < 100) {
-                    ctx.fillStyle = `rgb(${100 - dist},0,0)`;
+                    ctx.fillStyle = `rgb(${120 - dist},0,${100 - dist})`;
                 }
                 ctx.fillRect(0, 0, 10, 10);
                 ctx.restore();
